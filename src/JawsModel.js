@@ -1,82 +1,58 @@
-import { isLiteral } from './utils/tests';
+import symbols from './symbols';
 import InstantiateAbstractError from './errors/InstantiateAbstractError';
 import SchemaAlreadyLoadedError from './errors/SchemaAlreadyLoadedError';
+import { isLiteral } from './utils/tests';
+import Entity from './JawsEntity';
 
-const symbols = {
-  class: Symbol('class'),
-  createClass: Symbol('_createClass'),
-  isChanged: Symbol('isChanged'),
-  fields: Symbol('_fields'),
-  schemaLoaded: Symbol('_schemaLoaded'),
-  loadSchema: Symbol('_loadSchema'),
-};
 
-function createClass(target) {
-  Reflect.defineProperty(target, symbols.class, {
-    enumerable: false,
-    writable: false,
-    value: class {
-    },
-  });
 
-  return Reflect.get(target, symbols.class);
-}
-
-function createFields(target) {
-  Reflect.defineProperty(target, symbols.fields, {
-    enumerable: false,
-    writable: false,
-    value: {},
-  });
-
-  return Reflect.get(target, symbols.fields);
-}
-
-function getFields(target) {
-  return Reflect.get(target, symbols.fields);
-}
-
-function createField(target, name, options) {
-  const fields = getFields(target);
-
+function defineClassField(target, name, fields) {
   Reflect.set(fields, name, {
-    value: null,
+    current: null,
+    original: null,
+    changed: false,
   });
+
+  const field = fields[name];
 
   Reflect.defineProperty(target, name, {
     enumerable: true,
-    get: () => {
-      return fields[name].value;
-    },
+    get: () => field.current,
     set: (value) => {
-      if (fields[name].value !== value) {
-        fields[name].value = value;
+      field.current = value;
+
+      if (field.current === field.original) {
+        target[symbols.changed].delete(field);
+      } else {
+        target[symbols.changed].add(field);
       }
-    }
-  })
+    },
+  });
 }
 
-export function isEntity(object) {
-  return isLiteral(Reflect.get(object, symbols.fields));
+function defineClassFields(target, schema) {
+  const fields = Reflect.get(target, symbols.fields);
+
+  Object.keys(schema).forEach((name) => {
+    defineClassField(target, name, fields);
+  });
 }
+
+function createEntityClass({ schema }) {
+  const EntityClass = class extends Entity {};
+
+  defineClassFields(EntityClass.prototype, schema);
+  return EntityClass;
+}
+
 export default class Model {
   constructor(options) {
     // Create inner class for entities
     Reflect.defineProperty(this, symbols.class, {
-      value: Model.createClass(options),
+      enumerable: false,
+      writable: false,
+      value: createEntityClass(options),
     });
-  }
-
-  static createClass(options) {
-    const _class = createClass(this);
-    const fields = createFields(_class.prototype);
-
-    // Get only public keys
-    Object.keys(options.schema).forEach((key) => {
-      createField(_class.prototype, key);
-    });
-
-    return _class;
   }
 
   create(data) {

@@ -1,4 +1,5 @@
-import Model, { isEntity } from '../src/JawsModel';
+import Model from '../src/JawsModel';
+import { isEntity } from '../src/utils/tests';
 
 const options = {
   name: 'Device',
@@ -20,6 +21,7 @@ const options = {
   },
 };
 
+
 test('Is object an entity', () => {
   const TestModel = new Model(options);
   const test = TestModel.create({
@@ -27,6 +29,12 @@ test('Is object an entity', () => {
     type: 'Camaro',
     description: 'Year 2011',
   });
+
+  console.log(test.isChanged());
+
+  test.name = 'Aaaaa';
+
+  console.log(test.isChanged());
 
   expect(isEntity(test))
     .toBe(true);
