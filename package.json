@@ -17,6 +17,7 @@
   "scripts": {
     "init": "echo 'Initializing project, please wait...'; yarn",
     "build": "node -r babel-register build/build.js",
+    "test": "jest",
     "dev": "node build/dev.js"
   },
   "main": "src/JawsModel.js",
@@ -26,9 +27,15 @@
     "babel-preset-env": "^1.4.0",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.24.1",
-    "jest": "^19.0.2",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0",
+    "jest-cli": "^19.0.2",
     "webpack": "^2.4.1",
     "webpack-dashboard": "^0.3.0",
     "webpack-dev-server": "^2.4.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
