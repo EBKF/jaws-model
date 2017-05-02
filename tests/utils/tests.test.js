@@ -5,7 +5,11 @@ test('isLiteral', () => {
 
   expect(tests.isLiteral('not'))
     .toBe(false);
-  
+
   expect(tests.isLiteral(null))
     .toBe(false);
+});
+
+test('isEntity', () => {
+  const { isEntity } = tests;
 });

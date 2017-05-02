@@ -1,4 +1,4 @@
-import Entity from '../JawsEntity';
+import { Entity } from '../Entity';
 
 export function isLiteral(mixed) {
   if (mixed === null) {

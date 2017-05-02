@@ -1,4 +1,4 @@
-import Model from '../src/JawsModel';
+import Model from '../src/Model';
 import { isEntity } from '../src/utils/tests';
 
 const options = {
@@ -11,7 +11,7 @@ const options = {
     },
     type: {
       type: 'String',
-      default: null,
+      default: 'testtt',
     },
     description: {
       type: 'String',
@@ -35,7 +35,4 @@ test('Is object an entity', () => {
   test.name = 'Aaaaa';
 
   console.log(test.isChanged());
-
-  expect(isEntity(test))
-    .toBe(true);
 });
