@@ -1,74 +1,46 @@
+import EntityAbstract from './EntityAbstract';
 import symbols from './symbols';
 
-export default class Entity {
-  constructor(data) {
-    Reflect.ownKeys(data).forEach((key) => {
-      const field = this[symbols.fields][key];
+function defineFieldSchema(target, name, schema) {
+  const defaultValue = schema.default || null;
 
-      if (field) {
-        field.original = data[key];
-        field.current = field.original;
-      }
-    });
-  }
-
-  isChanged() {
-    return !!this[symbols.changed].size;
-  }
-
-  [symbols.setValue](name, value) {
-    const field = this[symbols.fields][name];
-
-    if (field.current !== value) {
-      field.current = value;
-
-      if (field.current === field.original) {
-        this[symbols.changed].delete(field);
-      } else {
-        this[symbols.changed].add(field);
-      }
-    }
-  }
+  Reflect.set(target, name, {
+    default: defaultValue,
+    current: defaultValue,
+    original: defaultValue,
+  });
 }
 
-Reflect.defineProperty(Entity.prototype, symbols.fields, {
-  enumerable: false,
-  writable: false,
-  value: {},
-});
+function defineFieldAccessors(target, name) {
+  Reflect.defineProperty(target, name, {
+    enumerable: true,
+    get() {
+      return this[symbols.fields][name].current;
+    },
+    set(value) {
+      this[symbols.setValue](name, value);
+    },
+  });
+}
 
-Reflect.defineProperty(Entity.prototype, symbols.changed, {
-  enumerable: false,
-  writable: false,
-  value: new Set(),
-});
-
+/**
+ * Create new entity class that extends Entity
+ * and customize its fields etc.
+ *
+ * @param {{}} options
+ */
 function createEntityClass({ schema }) {
-  const EntityClass = class extends Entity {};
+  const EntityClass = class extends EntityAbstract {};
   const fields = EntityClass.prototype[symbols.fields];
 
   Object.keys(schema).forEach((name) => {
-    const defaultValue = schema[name].default || null;
-
-    Reflect.set(fields, name, {
-      default: defaultValue,
-      current: defaultValue,
-      original: defaultValue,
-    });
-
-    Reflect.defineProperty(EntityClass.prototype, name, {
-      enumerable: true,
-      get() {
-        return this[symbols.fields][name];
-      },
-      set(value) {
-        this[symbols.setValue](name, value);
-      },
-    });
+    defineFieldSchema(fields, name, schema[name]);
+    defineFieldAccessors(EntityClass.prototype, name);
   });
 
   return EntityClass;
 }
+
 
 export const EntityClassFactory = {
   create(options) {

@@ -1,5 +1,7 @@
-import { Entity } from '../Entity';
-
+/**
+ * Checks if value is literal object
+ * @param {*} mixed value
+ */
 export function isLiteral(mixed) {
   if (mixed === null) {
     return false;
@@ -7,6 +9,9 @@ export function isLiteral(mixed) {
   return typeof mixed === 'object' && mixed.constructor === {}.constructor;
 }
 
-export function isEntity(object) {
-  return object instanceof Entity;
-}
+/**
+ * Exports object literal with all tests as default
+ */
+export default {
+  isLiteral,
+};

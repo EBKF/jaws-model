@@ -1,38 +1,38 @@
 import Model from '../src/Model';
-import { isEntity } from '../src/utils/tests';
+import ModelInterface from '../src/ModelInterface';
+import { entityClass } from '../src/symbols';
 
-const options = {
-  name: 'Device',
-  schema: {
-    name: {
-      type: 'String',
-      maxLength: 100,
-      nullable: true,
-    },
-    type: {
-      type: 'String',
-      default: 'testtt',
-    },
-    description: {
-      type: 'String',
-      maxLength: 255,
-      nullable: false,
-    },
-  },
-};
+/**
+ * @test {Model}
+ */
+describe('Model functionality', () => {
+  let model = null;
 
+  /**
+   * @test {Model}
+   */
+  it('Creates new Model', () => {
+    model = new Model({
+      schema: {},
+    });
 
-test('Is object an entity', () => {
-  const TestModel = new Model(options);
-  const test = TestModel.create({
-    name: 'Chevrolet',
-    type: 'Camaro',
-    description: 'Year 2011',
+    expect(typeof model)
+      .toBe('object');
   });
 
-  console.log(test.isChanged());
+  /**
+   * @test {Model}
+   */
+  it('Checks if Model is instance of ModelInterface', () => {
+    expect(model)
+      .toBeInstanceOf(ModelInterface);
+  });
 
-  test.name = 'Aaaaa';
-
-  console.log(test.isChanged());
+  /**
+   * @test {Model#create}
+   */
+  it('Creates new entity via Model', () => {
+    expect(model.create())
+      .toBeInstanceOf(model[entityClass]);
+  });
 });

@@ -1,5 +1,5 @@
 /**
- * Schema already loaded error
+ * Schema already loaded error class
  */
 export default class SchemaAlreadyLoadedError extends Error {
   constructor() {

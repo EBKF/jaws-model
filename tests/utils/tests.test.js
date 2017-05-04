@@ -1,15 +1,20 @@
-import * as tests from '../../src/utils/tests';
+import { isLiteral } from '../../src/utils/tests';
 
-test('isLiteral', () => {
-  const { isLiteral } = tests;
+/**
+ * @test {*}
+ */
+describe('Tests functions', () => {
+  /**
+   * @test {Function}
+   */
+  it('Checks if value is literal', () => {
+    expect(isLiteral({}))
+      .toBe(true);
 
-  expect(tests.isLiteral('not'))
-    .toBe(false);
+    expect(isLiteral(null))
+      .toBe(false);
 
-  expect(tests.isLiteral(null))
-    .toBe(false);
-});
-
-test('isEntity', () => {
-  const { isEntity } = tests;
+    expect(isLiteral())
+      .toBe(false);
+  });
 });
