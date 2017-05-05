@@ -1,17 +1,22 @@
 /**
- * Symbol that defines class property
+ * Sets entityClass property
  */
-export const entityClass = Symbol('_entityClass');
+const entityClass = Symbol('_entityClass');
 
 /**
- * Symbol that defines fields property
+ * Sets field property
  */
-export const fields = Symbol('_fields');
+const fields = Symbol('_fields');
 
 /**
- * Symbol that defines setValue method
+ * Sets field names property
  */
-export const setValue = Symbol('_setValue');
+const fieldNames = Symbol('_fieldNames');
+
+/**
+ * Sets setValue method
+ */
+const setValue = Symbol('_setValue');
 
 /**
  * Exports literal object with all defined symbols
@@ -19,5 +24,6 @@ export const setValue = Symbol('_setValue');
 export default {
   entityClass,
   fields,
+  fieldNames,
   setValue,
 };

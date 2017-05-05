@@ -1,6 +1,14 @@
 import EntityAbstract from './EntityAbstract';
 import symbols from './symbols';
 
+/**
+ * Defines field name
+ * @param {Class} target Class target
+ * @param {string} name Field name
+ */
+function defineFieldName(target, name) {
+  target[symbols.fieldNames].push(name);
+}
 function defineFieldSchema(target, name, schema) {
   const defaultValue = schema.default || null;
 
@@ -34,6 +42,7 @@ function createEntityClass({ schema }) {
   const fields = EntityClass.prototype[symbols.fields];
 
   Object.keys(schema).forEach((name) => {
+    defineFieldName(EntityClass.prototype, name);
     defineFieldSchema(fields, name, schema[name]);
     defineFieldAccessors(EntityClass.prototype, name);
   });

@@ -47,6 +47,9 @@ describe('Entity functionality', () => {
       .toBe(data.year);
   });
 
+  /**
+   * @test {Entity}
+   */
   it('Creates new Entity with data overflow', () => {
     expect(model.create({
       notExists: null,
@@ -54,11 +57,39 @@ describe('Entity functionality', () => {
       .toBeUndefined();
   });
 
+  /**
+   * @test {Entity}
+   */
+  it('Gets original value of entity property', () => {
+    expect(entity.$original)
+      .toBeDefined();
+
+    expect(entity.$original)
+      .toHaveProperty('year');
+
+    expect(entity.$original)
+      .not.toHaveProperty('notExists');
+
+    expect(entity.$original.year)
+      .toBe(data.year);
+
+    expect(entity.getOriginalFor('year'))
+      .toBe(data.year);
+
+    expect(() => {
+      entity.getOriginalFor('notExists');
+    })
+      .toThrow();
+  });
+
+  /**
+   * @test {Entity}
+   */
   it('Changes Entity data and checks changed state', () => {
     expect(entity.isChanged())
       .toBeFalsy();
 
-    entity.year = 2010;
+    entity.year += 1;
 
     expect(entity.isChanged())
       .toBeTruthy();
@@ -72,6 +103,54 @@ describe('Entity functionality', () => {
 
     expect(entity.isChanged())
       .toBeFalsy();
+  });
+
+  /**
+   * @test {Entity}
+   */
+  it('Reverts changes on modified entity', () => {
+    entity.year = entity.$original.year + 1;
+
+    expect(entity.isChanged())
+      .toBeTruthy();
+
+    entity.rollback();
+
+    expect(entity.isChanged())
+      .toBeFalsy();
+
+    expect(entity.year)
+      .not.toBe(entity.$original.year + 1);
+  });
+
+  /**
+   * @test {Entity}
+   */
+  it('Gets field names of entity', () => {
+    const names = Reflect.ownKeys(options.schema);
+
+    expect(entity.$fieldNames)
+      .toBeDefined();
+
+    expect(entity.$fieldNames)
+      .toEqual(expect.arrayContaining(names));
+  });
+
+  /**
+   * @test {Entity}
+   */
+  it('Gets changes of modified entity', () => {
+    const change = {
+      year: entity.$original.year + 1,
+    };
+
+    expect(entity.$changes)
+      .toBeNull();
+
+    entity.year = change.year;
+
+    expect(entity.$changes)
+      .toMatchObject(change);
   });
 });
 
