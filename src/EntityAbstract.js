@@ -49,13 +49,12 @@ export default class EntityAbstract extends EntityInterface {
       field.current = value;
 
       if (field.current === field.original) {
-        this[symbols.changed].delete(field);
+        this[symbols.changed].delete(name);
       } else {
-        this[symbols.changed].add(field);
+        this[symbols.changed].set(name, field);
       }
     }
   }
-
 
   /**
    * Get original value for field
@@ -89,26 +88,34 @@ export default class EntityAbstract extends EntityInterface {
    * Revert entity to its original condition
    */
   rollback() {
+    const changed = this[symbols.changed];
     const fields = this[symbols.fields];
 
-    this[symbols.changed].clear();
-    this.$fieldNames.forEach((name) => {
+    Array.from(changed.keys()).forEach((name) => {
       fields[name].current = fields[name].default;
     });
 
+    changed.clear();
   }
 
   get $fieldNames() {
     return this[symbols.fieldNames];
   }
 
+  /**
+   * Get object with changed fields
+   * @returns {{}}
+   */
   get $changes() {
     const changed = this[symbols.changed];
-    
+    const changes = {};
+
     if (changed.size) {
       changed.forEach((value, key) => {
-        console.log(value, key);
-      })
+        changes[key] = value.current;
+      });
+
+      return changes;
     }
 
     return null;
@@ -124,6 +131,6 @@ Reflect.defineProperty(EntityAbstract.prototype, symbols.fieldNames, {
 });
 
 Reflect.defineProperty(EntityAbstract.prototype, symbols.changed, {
-  value: new Set(),
+  value: new Map(),
 });
 

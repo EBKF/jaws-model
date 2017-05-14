@@ -1,4 +1,4 @@
-import { EntityClassFactory } from './Entity';
+import EntityClassFactory from './Entity';
 import ModelInterface from './ModelInterface';
 import { entityClass } from './symbols';
 

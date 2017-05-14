@@ -11,7 +11,7 @@ const options = {
     },
     type: {
       type: 'String',
-      default: 'testtt',
+      default: 'test',
     },
     year: {
       type: 'Number',
@@ -141,16 +141,45 @@ describe('Entity functionality', () => {
    */
   it('Gets changes of modified entity', () => {
     const change = {
+      name: 'Camarro',
       year: entity.$original.year + 1,
     };
 
     expect(entity.$changes)
       .toBeNull();
 
+    entity.name = change.name;
     entity.year = change.year;
 
     expect(entity.$changes)
       .toMatchObject(change);
+
+    entity.name = entity.$original.name;
+    entity.year = entity.$original.year;
+
+    expect(entity.$changes)
+      .toBeNull();
+  });
+
+  it('Rollbacks all changes of modified entity, returing it to original state', () => {
+    const change = {
+      name: 'Camarro',
+      year: entity.$original.year + 2,
+    };
+
+    entity.name = change.name;
+    entity.year = change.year;
+
+    expect(entity.$changes)
+      .toBeTruthy();
+
+    entity.rollback();
+
+    expect(entity.isChanged())
+      .toBeFalsy();
+
+    expect(entity.name === data.name);
+    expect(entity.year === data.year);
   });
 });
 

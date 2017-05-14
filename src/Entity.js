@@ -50,8 +50,7 @@ function createEntityClass({ schema }) {
   return EntityClass;
 }
 
-
-export const EntityClassFactory = {
+export default {
   create(options) {
     return createEntityClass(options);
   },
