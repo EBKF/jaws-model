@@ -37,7 +37,7 @@ function defineFieldAccessors(target, name) {
  *
  * @param {{}} options
  */
-function createEntityClass({ schema }) {
+function createEntityClass(model, { schema }) {
   const EntityClass = class extends EntityAbstract {};
   const fields = EntityClass.prototype[symbols.fields];
 
@@ -51,7 +51,7 @@ function createEntityClass({ schema }) {
 }
 
 export default {
-  create(options) {
-    return createEntityClass(options);
+  create(model, options) {
+    return createEntityClass(model, options);
   },
 };

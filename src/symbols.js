@@ -4,6 +4,11 @@
 const entityClass = Symbol('_entityClass');
 
 /**
+ * Set entities property
+ */
+const entities = Symbol('_entities');
+
+/**
  * Sets field property
  */
 const fields = Symbol('_fields');
@@ -23,6 +28,7 @@ const setValue = Symbol('_setValue');
  */
 export default {
   entityClass,
+  entities,
   fields,
   fieldNames,
   setValue,

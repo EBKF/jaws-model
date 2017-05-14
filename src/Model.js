@@ -1,6 +1,6 @@
 import EntityClassFactory from './Entity';
 import ModelInterface from './ModelInterface';
-import { entityClass } from './symbols';
+import symbols from './symbols';
 
 /**
  * Model class
@@ -13,8 +13,8 @@ export default class Model extends ModelInterface {
   constructor(options) {
     super();
 
-    Reflect.defineProperty(this, entityClass, {
-      value: EntityClassFactory.create(options),
+    Reflect.defineProperty(this, symbols.entityClass, {
+      value: EntityClassFactory.create(this, options),
     });
   }
 
@@ -24,6 +24,13 @@ export default class Model extends ModelInterface {
    * @return {EntityInterface}
    */
   create(data) {
-    return new this[entityClass](data);
+    const entity = new this[symbols.entityClass](data);
+    this[symbols.entities].add(entity);
+
+    return entity;
   }
 }
+
+Reflect.defineProperty(Model.prototype, symbols.entities, {
+  value: new Set(),
+});
