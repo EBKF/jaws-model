@@ -1,4 +1,9 @@
 /**
+ * Changes property
+ */
+const changes = Symbol('_changes');
+
+/**
  * entityClass property
  */
 const entityClass = Symbol('_entityClass');
@@ -19,6 +24,11 @@ const fields = Symbol('_fields');
 const model = Symbol('_model');
 
 /**
+ * name property
+ */
+const name = Symbol('_name');
+
+/**
  * field names property
  */
 const fieldNames = Symbol('_fieldNames');
@@ -32,10 +42,12 @@ const setValue = Symbol('_setValue');
  * Exports literal object with all defined symbols
  */
 export default {
+  changes,
   entityClass,
   entities,
   fields,
   fieldNames,
   model,
+  name,
   setValue,
 };
