@@ -20,42 +20,42 @@ export default class EntityInterface {
    * Is Entity changed
    */
   isChanged() {
-    throw new NotImplementedError(this.isChanged.name);
+    throw new NotImplementedError();
   }
 
   /**
    * Get original value for given field
    */
   getOriginalFor() {
-    throw new NotImplementedError(this.getOriginalFor.name);
+    throw new NotImplementedError();
   }
 
   /**
    * Get original values of all fields
    */
   get $original() {
-    throw new NotImplementedError(this.$original.name);
+    throw new NotImplementedError();
   }
 
   /**
    * Get Entity changed fields with current values
    */
   get $changes() {
-    throw new NotImplementedError(this.$changes.name);
+    throw new NotImplementedError();
   }
 
   /**
    * Get all field names
    */
   get $fieldNames() {
-    throw new NotImplementedError(this.$fieldNames.name);
+    throw new NotImplementedError();
   }
 
   rollback() {
-    throw new NotImplementedError(this.rollback.name);
+    throw new NotImplementedError();
   }
 
   commit() {
-    throw new NotImplementedError(this.$commit.name);
+    throw new NotImplementedError();
   }
 }

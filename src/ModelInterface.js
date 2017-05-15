@@ -22,6 +22,6 @@ export default class ModelInterface {
    * @return {EntityInterface}
    */
   create() {
-    throw new NotImplementedError(this.create.name);
+    throw new NotImplementedError();
   }
 }

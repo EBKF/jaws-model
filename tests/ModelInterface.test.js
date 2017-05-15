@@ -19,11 +19,10 @@ describe('Testing ModelInterface', () => {
    * @test {ModelInterface#create}
    */
   it('Throw error when interface is not implemented', () => {
-    expect(() => {
-      const Model = class extends ModelInterface {};
-      const model = new Model();
-      model.create();
-    })
-    .toThrow();
+    const Model = class extends ModelInterface {};
+    const model = new Model();
+
+    expect(() => model.create())
+      .toThrow('Not implemented');
   });
 });

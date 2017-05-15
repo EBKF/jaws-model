@@ -1,4 +1,6 @@
 import EntityInterface from '../src/EntityInterface';
+import ModelInterface from '../src/ModelInterface';
+import NotImplementedError from '../src/errors/NotImplementedError';
 import Model from '../src/Model';
 
 const options = {
@@ -47,13 +49,31 @@ describe('Entity functionality', () => {
       .toBe(data.year);
   });
 
+  it('Implements EntityInterface', () => {
+    expect(() => entity.$original)
+      .not.toThrow('Not implemented');
+
+    expect(() => entity.$changes)
+      .not.toThrow('Not implemented');
+
+    expect(() => entity.$fieldNames)
+      .not.toThrow('Not implemented');
+
+    expect(() => entity.isChanged())
+      .not.toThrow('Not implemented');
+
+    expect(() => entity.getOriginalFor('name'))
+      .not.toThrow('Not implemented');
+
+    expect(() => entity.rollback())
+      .not.toThrow('Not implemented');
+  });
+
   /**
    * @test {Entity}
    */
   it('Creates new Entity with data overflow', () => {
-    expect(model.create({
-      notExists: null,
-    }).notExists)
+    expect(model.create({ notExists: null }).notExists)
       .toBeUndefined();
   });
 
@@ -146,6 +166,9 @@ describe('Entity functionality', () => {
     };
 
     expect(entity.$changes)
+      .toBeDefined();
+
+    expect(entity.$changes)
       .toBeNull();
 
     entity.name = change.name;
@@ -161,6 +184,9 @@ describe('Entity functionality', () => {
       .toBeNull();
   });
 
+  /**
+   * @test {Entity}
+   */
   it('Rollbacks all changes of modified entity, returing it to original state', () => {
     const change = {
       name: 'Camarro',
@@ -181,5 +207,18 @@ describe('Entity functionality', () => {
     expect(entity.name === data.name);
     expect(entity.year === data.year);
   });
-});
 
+  /**
+   * @test {Entity}
+   */
+  it('Gets parent Model of Entity', () => {
+    expect(entity.$model)
+      .toBeDefined();
+
+    expect(entity.$model)
+      .toBeInstanceOf(ModelInterface);
+
+    expect(entity.$model)
+      .toBeInstanceOf(model.constructor);
+  });
+});

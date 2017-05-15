@@ -1,3 +1,4 @@
+import ConnectorInterface from '../src/connectors/ConnectorInterface';
 import Model from '../src/Model';
 import ModelInterface from '../src/ModelInterface';
 import symbols from '../src/symbols';
@@ -47,5 +48,13 @@ describe('Model functionality', () => {
 
     expect(model[symbols.entities].size)
       .toBe(entities.length + size);
+  });
+
+  it('Gets Connector attached to Model', () => {
+    expect(model.$connector)
+      .toBeDefined();
+
+    expect(model.$connector)
+      .toBeInstanceOf(ConnectorInterface);
   });
 });

@@ -47,6 +47,9 @@ function createEntityClass(model, { schema }) {
     defineFieldAccessors(EntityClass.prototype, name);
   });
 
+  // Set model
+  Reflect.set(EntityClass.prototype, symbols.model, model);
+
   return EntityClass;
 }
 

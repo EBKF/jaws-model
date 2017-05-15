@@ -120,17 +120,31 @@ export default class EntityAbstract extends EntityInterface {
 
     return null;
   }
+
+  get $model() {
+    return this[symbols.model];
+  }
 }
 
-Reflect.defineProperty(EntityAbstract.prototype, symbols.fields, {
-  value: {},
+Reflect.defineProperty(EntityAbstract.prototype, symbols.changed, {
+  value: new Map(),
 });
 
 Reflect.defineProperty(EntityAbstract.prototype, symbols.fieldNames, {
   value: [],
 });
 
-Reflect.defineProperty(EntityAbstract.prototype, symbols.changed, {
-  value: new Map(),
+Reflect.defineProperty(EntityAbstract.prototype, symbols.fields, {
+  value: {},
+});
+
+Reflect.defineProperty(EntityAbstract.prototype, symbols.model, {
+  writable: true,
+  value: null,
+});
+
+Reflect.defineProperty(EntityAbstract.prototype, symbols.isPersisted, {
+  writable: true,
+  value: false,
 });
 
