@@ -1,5 +1,5 @@
 /**
- * Instantiate abstract error class
+ * Instantiate interface error class
  * @extends {Error}
  */
 export default class InstantiateAbstractError extends Error {
@@ -8,6 +8,6 @@ export default class InstantiateAbstractError extends Error {
    * @param {string} name Class name
    */
   constructor(name) {
-    super(`Cannot instantiate abstract class: ${name}`);
+    super(`Cannot instantiate interface: ${name}`);
   }
 }

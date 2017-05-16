@@ -1,6 +1,4 @@
-import ConnectorInterface from '../src/connectors/ConnectorInterface';
 import Model from '../src/Model';
-import symbols from '../src/symbols';
 
 const UserDefinition = {
   name: 'User',
@@ -44,7 +42,7 @@ const Roles = {
 /**
  * @test {Model}
  */
-describe('Model functionality', () => {
+describe('Model class extending', () => {
   let UserModel = null;
 
   /**
@@ -63,7 +61,17 @@ describe('Model functionality', () => {
   });
 });
 
-describe('Model instance functionality', () => {
+describe('Model class connectors', () => {
+  it('Checks if connectors property returns literal object', () => {
+    expect(typeof Model.connectors)
+      .toBe('object');
+
+    expect(Model.connectors.constructor)
+      .toBe({}.constructor);
+  });
+});
+
+describe('Model instancing', () => {
   const UserModel = Model.extend(UserDefinition);
   let user = null;
 
@@ -181,6 +189,20 @@ describe('Model instance $fields property', () => {
   });
 });
 
+describe('Model instance undefined fields declarations', () => {
+  const UserModel = Model.extend(UserDefinition);
+
+  it('Ignores undefined fields declarations when creating new instance', () => {
+    const user = new UserModel({
+      undefined: true,
+      ...Users.first,
+    });
+
+    expect(user.$fields)
+      .not.toHaveProperty('undefined');
+  });
+});
+
 describe('Model instance $changes property', () => {
   const UserModel = Model.extend(UserDefinition);
   const user = new UserModel(Users.first);
@@ -213,6 +235,17 @@ describe('Model instance $changes property', () => {
   it('Checks if $changes is null after revert changes', () => {
     user.firstName = Users.first.firstName;
     user.lastName = Users.first.lastName;
+
+    expect(user.$changes)
+      .toBeNull();
+  });
+
+  it('Checks if $chanes is null after assignig same value as current', () => {
+    expect(user.$changes)
+      .toBeNull();
+
+    user.firstName = user.firstName;
+    user.lastName = user.lastName;
 
     expect(user.$changes)
       .toBeNull();

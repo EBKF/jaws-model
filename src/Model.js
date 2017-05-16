@@ -1,3 +1,4 @@
+import Connectors from './connectors/Connectors';
 import symbols from './symbols';
 
 /**
@@ -18,6 +19,9 @@ export default class Model {
     });
   }
 
+  static get connectors() {
+    return Connectors;
+  }
   static extend(definition) {
     const schema = definition.schema;
     const fields = new Map();
