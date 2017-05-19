@@ -29,11 +29,6 @@ const model = Symbol('_model');
 const name = Symbol('_name');
 
 /**
- * field names property
- */
-const fieldNames = Symbol('_fieldNames');
-
-/**
  * setValue method
  */
 const setValue = Symbol('_setValue');
@@ -46,7 +41,6 @@ export default {
   entityClass,
   entities,
   fields,
-  fieldNames,
   model,
   name,
   setValue,

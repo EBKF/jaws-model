@@ -1,32 +1,37 @@
 import Connectors from './connectors/Connectors';
+import InstantiateError from './errors/InstantiateError';
 import symbols from './symbols';
 
 /**
  * Model class
  */
-export default class Model {
+export default class BaseModel {
   /**
    * Constructor
    * @param {{}} data
    */
   constructor(data) {
+    if (this.constructor === BaseModel) {
+      throw new InstantiateError(BaseModel.name);
+    }
+
+    // Define fields in internal fields object
     Reflect.ownKeys(data).forEach((key) => {
-      if (this[symbols.fields].has(key)) {
-        const field = this[symbols.fields].get(key);
-        field.original = data[key];
-        field.current = field.original;
-      }
+      this[symbols.fields].set(key, { current: null, original: null });
     });
   }
 
   static get connectors() {
     return Connectors;
   }
-  static extend(definition) {
-    const schema = definition.schema;
-    const fields = new Map();
 
-    const ModelClass = class extends Model {
+  /**
+   * Create new Model
+   * @param {string} name
+   * @return {Model}
+   */
+  static create(name) {
+    const Model = class extends BaseModel {
       isChanged() {
         return !!this[symbols.changes].size;
       }
@@ -34,8 +39,8 @@ export default class Model {
       rollback() {
         const changes = this[symbols.changes];
 
-        Array.from(changes.keys()).forEach((name) => {
-          const field = this[symbols.fields].get(name);
+        Array.from(changes.keys()).forEach((key) => {
+          const field = this[symbols.fields].get(key);
           field.current = field.default;
         });
 
@@ -43,7 +48,7 @@ export default class Model {
       }
 
       get $name() {
-        return ModelClass[symbols.name];
+        return this[symbols.name];
       }
 
       get $fields() {
@@ -57,7 +62,7 @@ export default class Model {
       }
 
       get $fieldNames() {
-        return [...this[symbols.fields].keys()];
+        return Array.from(this[symbols.fields].keys());
       }
 
       get $changes() {
@@ -78,60 +83,42 @@ export default class Model {
       get $original() {
         const computed = {};
 
-        this.$fieldNames.forEach((name) => {
-          computed[name] = this[symbols.fields].get(name).original;
+        this.$fieldNames.forEach((key) => {
+          computed[name] = this[symbols.fields].get(key).original;
         });
 
         return computed;
       }
 
-      [symbols.setValue](name, value) {
-        const field = this[symbols.fields].get(name);
+      [symbols.setValue](key, value) {
+        const field = this[symbols.fields].get(key);
 
-        if (field.current !== value) {
-          field.current = value;
+        if (field.current === value) {
+          return;
+        }
 
-          if (field.current === field.original) {
-            this[symbols.changes].delete(name);
-          } else {
-            this[symbols.changes].set(name, field);
-          }
+        field.current = value;
+
+        if (field.current === field.original) {
+          this[symbols.changes].delete(key);
+        } else {
+          this[symbols.changes].set(key, field);
         }
       }
     };
 
-    ModelClass[symbols.name] = definition.name;
-    ModelClass[symbols.fields] = {};
-    ModelClass[symbols.fieldNames] = new Set();
-
-    Reflect.defineProperty(ModelClass.prototype, symbols.fields, {
-      value: fields,
+    Reflect.defineProperty(Model.prototype, symbols.name, {
+      value: name,
     });
 
-    Reflect.ownKeys(schema).forEach((name) => {
-      const defaultValue = schema[name].default || null;
-
-      fields.set(name, {
-        default: defaultValue,
-        current: defaultValue,
-        origin: defaultValue,
-      });
-
-      Reflect.defineProperty(ModelClass.prototype, name, {
-        enumerable: true,
-        get() {
-          return this[symbols.fields].get(name).current;
-        },
-        set(value) {
-          this[symbols.setValue](name, value);
-        },
-      });
-    });
-
-    Reflect.defineProperty(ModelClass.prototype, symbols.changes, {
+    Reflect.defineProperty(Model.prototype, symbols.fields, {
       value: new Map(),
     });
 
-    return ModelClass;
+    Reflect.defineProperty(Model.prototype, symbols.changes, {
+      value: new Map(),
+    });
+
+    return Model;
   }
 }

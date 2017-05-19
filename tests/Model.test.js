@@ -1,23 +1,5 @@
 import Model from '../src/Model';
 
-const UserDefinition = {
-  name: 'User',
-  schema: {
-    firstName: {
-    },
-    lastName: {
-    },
-  },
-};
-
-const RoleDefinition = {
-  name: 'Role',
-  schema: {
-    name: {
-    },
-  },
-};
-
 const Users = {
   first: {
     firstName: 'John',
@@ -38,30 +20,30 @@ const Roles = {
   },
 };
 
+describe('BaseModel instancing', () => {
+  it('Throws error on instancing BaseModel', () => {
+    expect(() => new Model())
+      .toThrow('Cannot instantiate: BaseModel');
+  });
+});
 
-/**
- * @test {Model}
- */
-describe('Model class extending', () => {
-  let UserModel = null;
+describe('Model creating', () => {
+  let User = null;
 
-  /**
-   * @test {Model}
-   */
   it('Gets new Model class', () => {
-    UserModel = Model.extend(UserDefinition);
+    User = Model.create('User');
 
-    expect(typeof UserModel)
+    expect(typeof User)
       .toBe('function');
   });
 
-  it('Checks if Test class is instance of Model', () => {
-    expect(UserModel.prototype)
+  it('Checks if new Model class is instance of BaseModel', () => {
+    expect(User.prototype)
       .toBeInstanceOf(Model);
   });
 });
 
-describe('Model class connectors', () => {
+describe('BaseModel static connectors', () => {
   it('Checks if connectors property returns literal object', () => {
     expect(typeof Model.connectors)
       .toBe('object');
@@ -72,20 +54,25 @@ describe('Model class connectors', () => {
 });
 
 describe('Model instancing', () => {
-  const UserModel = Model.extend(UserDefinition);
+  const User = Model.create('User');
   let user = null;
 
-  it('Creates new instance of Model', () => {
-    user = new UserModel(Users.first);
+  it('Checks if new instance is instanceof BaseModel', () => {
+    user = new User(Users.first);
 
     expect(user)
-      .toBeInstanceOf(UserModel);
+      .toBeInstanceOf(Model);
+  });
+
+  it('Checks if new instance is instance of Model', () => {
+    expect(user)
+      .toBeInstanceOf(User);
   });
 });
 
 describe('Model instance $name property', () => {
-  const UserModel = Model.extend(UserDefinition);
-  const user = new UserModel(Users.first);
+  const User = Model.create('User');
+  const user = new User(Users.first);
 
   it('Checks if $name property exists', () => {
     expect(user.$name)
@@ -94,45 +81,45 @@ describe('Model instance $name property', () => {
 
   it('Checks if $name property has correct value', () => {
     expect(user.$name)
-      .toBe(UserDefinition.name);
+      .toBe('User');
   });
 });
 
-describe('Model fields getters and setters', () => {
-  const UserModel = Model.extend(UserDefinition);
-  const user = new UserModel(Users.first);
-
-  it('Checks if all fields getters are defined', () => {
-    expect(user.firstName)
-      .toBeDefined();
-
-    expect(user.lastName)
-      .toBeDefined();
-  });
-
-  it('Checks if all fields getters have correct values', () => {
-    expect(user.firstName)
-      .toBe(Users.first.firstName);
-
-    expect(user.lastName)
-      .toBe(Users.first.lastName);
-  });
-
-  it('Checks if all setters are working properly', () => {
-    user.firstName = Users.second.firstName;
-    user.lastName = Users.second.lastName;
-
-    expect(user.firstName)
-      .toBe(Users.second.firstName);
-
-    expect(user.lastName)
-      .toBe(Users.second.lastName);
-  });
-});
+// describe('Model fields getters and setters', () => {
+//   const User = Model.create();
+//   const user = new User(Users.first);
+//
+//   it('Checks if all fields getters are defined', () => {
+//     expect(user.firstName)
+//       .toBeDefined();
+//
+//     expect(user.lastName)
+//       .toBeDefined();
+//   });
+//
+//   it('Checks if all fields getters have correct values', () => {
+//     expect(user.firstName)
+//       .toBe(Users.first.firstName);
+//
+//     expect(user.lastName)
+//       .toBe(Users.first.lastName);
+//   });
+//
+//   it('Checks if all setters are working properly', () => {
+//     user.firstName = Users.second.firstName;
+//     user.lastName = Users.second.lastName;
+//
+//     expect(user.firstName)
+//       .toBe(Users.second.firstName);
+//
+//     expect(user.lastName)
+//       .toBe(Users.second.lastName);
+//   });
+// });
 
 describe('Model instance $fieldNames property', () => {
-  const UserModel = Model.extend(UserDefinition);
-  const user = new UserModel(Users.first);
+  const User = Model.create('User');
+  const user = new User(Users.first);
 
   it('Checks if $fieldNames property exists', () => {
     expect(user.$fieldNames)
@@ -151,8 +138,8 @@ describe('Model instance $fieldNames property', () => {
 });
 
 describe('Model instance $fields property', () => {
-  const UserModel = Model.extend(UserDefinition);
-  const user = new UserModel(Users.first);
+  const User = Model.create();
+  const user = new User(Users.first);
 
   it('Checks if $fields property exists', () => {
     expect(user.$fields)
@@ -240,19 +227,22 @@ describe('Model instance $changes property', () => {
       .toBeNull();
   });
 
-  it('Checks if $chanes is null after assignig same value as current', () => {
+  it('Checks if $changes is null after assigning same value as current', () => {
     expect(user.$changes)
       .toBeNull();
 
-    user.firstName = user.firstName;
-    user.lastName = user.lastName;
+    const firstName = user.firstName;
+    const lastName = user.lastName;
+
+    user.firstName = firstName;
+    user.lastName = lastName;
 
     expect(user.$changes)
       .toBeNull();
   });
 });
 
-describe('Model instace isChanged method', () => {
+describe('Model instance isChanged method', () => {
   const UserModel = Model.extend(UserDefinition);
   const user = new UserModel(Users.first);
 
