@@ -1,35 +1,30 @@
 /**
- * Changes property
+ * @type {Symbol}
  */
 const changes = Symbol('_changes');
 
 /**
- * entityClass property
+ * @type {Symbol}
  */
-const entityClass = Symbol('_entityClass');
+const entries = Symbol('_entries');
 
 /**
- * entities property
- */
-const entities = Symbol('_entities');
-
-/**
- * field property
+ * @type {Symbol}
  */
 const fields = Symbol('_fields');
 
 /**
- * model property
- */
-const model = Symbol('_model');
-
-/**
- * name property
+ * @type {Symbol}
  */
 const name = Symbol('_name');
 
 /**
- * setValue method
+ * @type {Symbol}
+ */
+const setField = Symbol('_setField');
+
+/**
+ * @type {Symbol}
  */
 const setValue = Symbol('_setValue');
 
@@ -38,10 +33,9 @@ const setValue = Symbol('_setValue');
  */
 export default {
   changes,
-  entityClass,
-  entities,
+  entries,
   fields,
-  model,
   name,
+  setField,
   setValue,
 };
